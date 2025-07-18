@@ -66,6 +66,13 @@ int main( int argc, char **argv )
 
     // ...
 
+    // 1. figure out what kind of transposal it will be ( rotation, inverting etc)
+    // 2. figure out device number of cores and how to efficiently parallelise
+    // 3. write serial version first and commit to github, then begin the parallelisation process via slides
+    // 4. understand kernel formatting again and refactor code to utilise kernel function
+    // 5. ensure reliable and usable for all sizes of grid
+    // 6. review thoroughly prior to submission
+
 
     //
     // Display the final result. This assumes that the transposed matrix was copied back to the hostMatrix array
