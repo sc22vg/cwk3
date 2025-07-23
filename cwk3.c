@@ -62,7 +62,7 @@ int main(int argc, char **argv)
 
     //      currently showinf in the format abcde
     //                                      fghi
-    
+
     //      instead of                      abc
     //                                      def
     //                                      ghi
@@ -73,6 +73,26 @@ int main(int argc, char **argv)
     // 4. understand kernel formatting again and refactor code to utilise kernel function
     // 5. ensure reliable and usable for all sizes of grid
     // 6. review thoroughly prior to submission
+
+    // Build the kernel code 'Transpose' contained in the file 'cwk3.cl'. (inspired by VectorAdd from slides 14)
+	cl_kernel kernel = compileKernelFromFile( "cwk3.cl", "Transpose", context, device );
+
+
+	// Specify the arguments to the kernel. (inspired by slides 14)
+	status = clSetKernelArg( kernel, 0, sizeof(cl_mem), &device );
+
+    // Set up the global problem size, and the work group size. (inspired by slides 14 VectorAdd)
+	size_t indexSpaceSize[1], workGroupSize[1];
+	indexSpaceSize[0] = nRows * nCols; // match the command line given size of vector
+	workGroupSize [0] = 128;
+
+    // Put the kernel onto the command queue. (inspired by sliodes 14 VectorAdd)
+	status = clEnqueueNDRangeKernel( queue, kernel, 1, NULL, indexSpaceSize, workGroupSize, 0, NULL, NULL );
+	if( status != CL_SUCCESS )
+	{
+		printf( "Failure enqueuing kernel: Error %d.\n", status );
+		return EXIT_FAILURE;
+	}
 
     //
     // Display the final result. This assumes that the transposed matrix was copied back to the hostMatrix array
