@@ -12,7 +12,6 @@
 // i.e. one of 1, 2, 4, 8, 16, 32, ...
 //
 
-
 //
 // Includes.
 //
@@ -26,17 +25,16 @@
 // Do not alter these routines, as they will be replaced with different versions for assessment.
 #include "helper_cwk.h"
 
-
 //
 // Main.
 //
-int main( int argc, char **argv )
+int main(int argc, char **argv)
 {
     //
     // Parse command line arguments and check they are valid. Handled by a routine in the helper file.
     //
     int nRows, nCols;
-    getCmdLineArgs( argc, argv, &nRows, &nCols );
+    getCmdLineArgs(argc, argv, &nRows, &nCols);
 
     //
     // Initialisation.
@@ -48,49 +46,49 @@ int main( int argc, char **argv )
 
     // Open up a single command queue, with the profiling option off (third argument = 0).
     cl_int status;
-    cl_command_queue queue = clCreateCommandQueue( context, device, 0, &status );
+    cl_command_queue queue = clCreateCommandQueue(context, device, 0, &status);
 
     // Allocate memory for the matrix.
-    float *hostMatrix = (float*) malloc( nRows*nCols*sizeof(float) );
+    float *hostMatrix = (float *)malloc(nRows * nCols * sizeof(float));
 
     // Fill the matrix with random values, and display.
-    fillMatrix( hostMatrix, nRows, nCols );
-    printf( "Original matrix (only top-left shown if too large):\n" );
-    displayMatrix( hostMatrix, nRows, nCols );
-
+    fillMatrix(hostMatrix, nRows, nCols);
+    printf("Original matrix (only top-left shown if too large):\n");
+    displayMatrix(hostMatrix, nRows, nCols);
 
     //
     // Transpose the matrix on the GPU.
     //
 
+    //      currently showinf in the format abcde
+    //                                      fghi
+    
+    //      instead of                      abc
+    //                                      def
+    //                                      ghi
 
-    // ...
-
-    // 1. figure out what kind of transposal it will be ( rotation, inverting etc)
     // 2. figure out device number of cores and how to efficiently parallelise
+    //      send from cpu to gpu to do the computation and then send back to the cpu when done
     // 3. write serial version first and commit to github, then begin the parallelisation process via slides
     // 4. understand kernel formatting again and refactor code to utilise kernel function
     // 5. ensure reliable and usable for all sizes of grid
     // 6. review thoroughly prior to submission
-
 
     //
     // Display the final result. This assumes that the transposed matrix was copied back to the hostMatrix array
     // (note the arrays are the same total size before and after transposing - nRows * nCols - so there is no risk
     // of accessing unallocated memory).
     //
-    printf( "Transposed matrix (only top-left shown if too large):\n" );
-    displayMatrix( hostMatrix, nCols, nRows );
-
+    printf("Transposed matrix (only top-left shown if too large):\n");
+    displayMatrix(hostMatrix, nCols, nRows);
 
     //
     // Release all resources.
     //
-    clReleaseCommandQueue( queue   );
-    clReleaseContext     ( context );
+    clReleaseCommandQueue(queue);
+    clReleaseContext(context);
 
-    free( hostMatrix );
+    free(hostMatrix);
 
     return EXIT_SUCCESS;
 }
-
