@@ -11,8 +11,8 @@ void Transpose(__global float *a, int i, int j)
     // swaps them
     int gid = get_global_id(0); // (i*nCols+j)
 
-    int buffer = a[gid]
-    int inverse = j*((gid - j) / i)+ i // converts gid to j*nRows+i
+    int buffer = a[gid];
+    int inverse = j*((gid - j) / i)+ i; // converts gid to j*nRows+i
     a[gid] = a[inverse];
     a[inverse] = buffer;
-}s
+}

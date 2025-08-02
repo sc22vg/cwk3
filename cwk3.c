@@ -79,7 +79,14 @@ int main(int argc, char **argv)
 
 
 	// Specify the arguments to the kernel. (inspired by slides 14)
-	status = clSetKernelArg( kernel, 0, sizeof(cl_mem), &device );
+    // causing a seg fault rn
+    // create buffer on gpu
+    cl_mem deviceMatrix = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, nRows * nCols * sizeof(float), hostMatrix, &status);
+	
+    //set kernel arguments
+    clSetKernelArg(kernel, 0, sizeof(cl_mem), &deviceMatrix);
+    clSetKernelArg(kernel, 1, sizeof(int), &nRows);
+    clSetKernelArg(kernel, 2, sizeof(int), &nCols);
 
     // Set up the global problem size, and the work group size. (inspired by slides 14 VectorAdd)
 	size_t indexSpaceSize[1], workGroupSize[1];
