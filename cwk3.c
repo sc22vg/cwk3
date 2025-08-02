@@ -77,9 +77,6 @@ int main(int argc, char **argv)
     // Build the kernel code 'Transpose' contained in the file 'cwk3.cl'. (inspired by VectorAdd from slides 14)
 	cl_kernel kernel = compileKernelFromFile( "cwk3.cl", "Transpose", context, device );
 
-
-	// Specify the arguments to the kernel. (inspired by slides 14)
-    // causing a seg fault rn
     // create buffer on gpu
     cl_mem deviceMatrix = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, nRows * nCols * sizeof(float), hostMatrix, &status);
 	
@@ -101,6 +98,9 @@ int main(int argc, char **argv)
 		return EXIT_FAILURE;
 	}
 
+    // copy result back
+    clEnqueueReadBuffer(queue, deviceMatrix, CL_TRUE, 0, nRows * nCols * sizeof(float), hostMatrix, 0, NULL, NULL);
+
     //
     // Display the final result. This assumes that the transposed matrix was copied back to the hostMatrix array
     // (note the arrays are the same total size before and after transposing - nRows * nCols - so there is no risk
@@ -114,6 +114,8 @@ int main(int argc, char **argv)
     //
     clReleaseCommandQueue(queue);
     clReleaseContext(context);
+    clReleaseMemObject(deviceMatrix);
+
 
     free(hostMatrix);
 
