@@ -5,7 +5,7 @@
 // which needs to be mapped to j*nRows+i
 
 __kernel
-void Transpose(__global float *a, const int nRows, const int nCols)
+void Transpose(__global const float *input,__global float *output,  const int nRows, const int nCols)
 {
     // gets the position of the current element and its 'opposite' to be transposed
     // swaps them
@@ -14,15 +14,13 @@ void Transpose(__global float *a, const int nRows, const int nCols)
     int j = gid % nCols; // column
 
     // only process upper triangle to avoid double swap
-    if (i<j && i<nRows && j<nCols)
+    if (i<nRows && j<nCols)
     {
         int inverse = j*nRows+i;
         int original = i*nCols+j;
 
         // swap original with opposite
-        float buffer = a[original];
-        a[original] = a[inverse];
-        a[inverse] = buffer;
+        output[inverse] = input[original];
     }
 
 }

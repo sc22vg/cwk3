@@ -77,13 +77,15 @@ int main(int argc, char **argv)
     // Build the kernel code 'Transpose' contained in the file 'cwk3.cl'. (inspired by VectorAdd from slides 14)
 	cl_kernel kernel = compileKernelFromFile( "cwk3.cl", "Transpose", context, device );
 
-    // create buffer on gpu
+    // create buffers on gpu
     cl_mem deviceMatrix = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, nRows * nCols * sizeof(float), hostMatrix, &status);
+    cl_mem outputBuffer = clCreateBuffer(context, CL_MEM_WRITE_ONLY, nRows * nCols * sizeof(float), NULL, &status);
 	
     //set kernel arguments
     clSetKernelArg(kernel, 0, sizeof(cl_mem), &deviceMatrix);
-    clSetKernelArg(kernel, 1, sizeof(int), &nRows);
-    clSetKernelArg(kernel, 2, sizeof(int), &nCols);
+    clSetKernelArg(kernel, 1, sizeof(cl_mem), &outputBuffer);
+    clSetKernelArg(kernel, 2, sizeof(int), &nRows);
+    clSetKernelArg(kernel, 3, sizeof(int), &nCols);
 
     // Set up the global problem size, and the work group size. (inspired by slides 14 VectorAdd)
 	size_t indexSpaceSize[1], workGroupSize[1];
@@ -99,7 +101,7 @@ int main(int argc, char **argv)
 	}
 
     // copy result back
-    clEnqueueReadBuffer(queue, deviceMatrix, CL_TRUE, 0, nRows * nCols * sizeof(float), hostMatrix, 0, NULL, NULL);
+    clEnqueueReadBuffer(queue, outputBuffer, CL_TRUE, 0, nRows * nCols * sizeof(float), hostMatrix, 0, NULL, NULL);
 
     //
     // Display the final result. This assumes that the transposed matrix was copied back to the hostMatrix array
@@ -115,6 +117,7 @@ int main(int argc, char **argv)
     clReleaseCommandQueue(queue);
     clReleaseContext(context);
     clReleaseMemObject(deviceMatrix);
+    clReleaseMemObject(outputBuffer);
 
 
     free(hostMatrix);
