@@ -1,9 +1,5 @@
 // Kernel for matrix transposition.
 
-// from cw spec:
-// the i'th row and j'th column has index i*nCols+j,
-// which needs to be mapped to j*nRows+i
-
 __kernel
 void Transpose(__global const float *input,__global float *output,  const int nRows, const int nCols)
 {
