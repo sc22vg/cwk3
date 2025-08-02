@@ -16,7 +16,7 @@ void Transpose(__global float *a, const int nRows, const int nCols)
     // only process upper triangle to avoid double swap
     if (i<j && i<nRows && j<nCols)
     {
-        int inverse = j*nCols+i;
+        int inverse = j*nRows+i;
         int original = i*nCols+j;
 
         // swap original with opposite
